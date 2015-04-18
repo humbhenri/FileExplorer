@@ -50,4 +50,7 @@ public class Directory implements FileSystemEntity {
         return pwd.getFileName().toString();
     }
 
+    public Path getPwd() {
+        return pwd;
+    }
 }

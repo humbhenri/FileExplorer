@@ -32,6 +32,6 @@ public class FileFactory {
     }
 
     private static boolean isImage(String type) {
-        return type.contains("image");
+        return type != null && type.contains("image");
     }
 }

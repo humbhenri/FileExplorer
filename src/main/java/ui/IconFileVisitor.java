@@ -1,9 +1,6 @@
 package ui;
 
-import model.Directory;
-import model.File;
-import model.FileSystemEntity;
-import model.FileVisitor;
+import model.*;
 
 import javax.swing.*;
 
@@ -22,6 +19,11 @@ public class IconFileVisitor implements FileVisitor {
     @Override
     public void visit(Directory dir) {
         component = new Icon(dir);
+    }
+
+    @Override
+    public void visit(Image image) {
+        component = new Icon(image);
     }
 
     public JComponent getIcon() {

@@ -6,4 +6,5 @@ package model;
 public interface FileVisitor {
     void visit(File file);
     void visit(Directory dir);
+    void visit(Image image);
 }

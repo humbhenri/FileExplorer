@@ -33,10 +33,6 @@ public class MainWindow extends JFrame implements OpenFileObserver {
                 getCurrentDir().toAbsolutePath().toString()));
     }
 
-    public static void main(String... args) {
-        new MainWindow().setVisible(true);
-    }
-
     public Path getCurrentDir() {
         return currentDir;
     }
@@ -51,5 +47,9 @@ public class MainWindow extends JFrame implements OpenFileObserver {
     public void directoryChanged(Path pwd) {
         setCurrentDir(pwd);
         iconview.setDir(getCurrentDir());
+    }
+
+    public static void main(String... args) {
+        new MainWindow().setVisible(true);
     }
 }

@@ -12,7 +12,12 @@ import java.util.List;
  * Created by humberto on 17/04/2015.
  */
 public enum OpenFileVisitor implements FileVisitor {
-    INSTANCE;
+    INSTANCE {
+        @Override
+        public void visit(Image image) {
+
+        }
+    };
 
     private List<OpenFileObserver> observers = new ArrayList<>();
 

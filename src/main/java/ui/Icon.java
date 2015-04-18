@@ -1,14 +1,19 @@
 package ui;
 
-import model.Directory;
+import model.*;
 import model.File;
-import model.FileSystemEntity;
-import model.OpenFileVisitor;
+import model.Image;
+import sun.rmi.runtime.Log;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by humberto on 16/04/2015.
@@ -18,6 +23,7 @@ public class Icon extends JLabel {
     private static final ImageIcon folderIcon = new ImageIcon(Icon.class.getClassLoader().getResource("images/folder.png"));
     private static final ImageIcon fileIcon = new ImageIcon(Icon.class.getClassLoader().getResource("images/empty.png"));
     private FileSystemEntity fileSystemEntity;
+    private static final Logger logger = Logger.getLogger(Icon.class.getName());
 
     public Icon(Directory directory) {
         super(directory.toString());
@@ -33,6 +39,25 @@ public class Icon extends JLabel {
         setIcon(fileIcon);
         putTextBelowIcon();
         addSelectBehaviour();
+    }
+
+    public Icon(Image image) {
+        super(image.toString(), JLabel.CENTER);
+        fileSystemEntity = image;
+        setIcon(loadThumbnail(image));
+        putTextBelowIcon();
+        addSelectBehaviour();
+    }
+
+    private ImageIcon loadThumbnail(Image image) {
+        try {
+            java.awt.Image thumb = ImageIO.read(new java.io.File(image.getPath()))
+                    .getScaledInstance(100, 100, BufferedImage.SCALE_SMOOTH);
+            return new ImageIcon(thumb);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            return fileIcon;
+        }
     }
 
     private void putTextBelowIcon() {

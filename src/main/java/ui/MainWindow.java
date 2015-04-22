@@ -1,8 +1,6 @@
 package ui;
 
-import model.DefaultApplication;
-import model.OpenFileObserver;
-import model.OpenFileVisitor;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +19,7 @@ import java.util.logging.Logger;
 public class MainWindow extends JFrame implements OpenFileObserver, ActionListener {
 
     private final IconView iconview;
-    private Path currentDir;
+    private Directory currentDir;
     private Logger logger = Logger.getLogger(MainWindow.class.getName());
     static final private String UP = "up";
 
@@ -30,7 +28,7 @@ public class MainWindow extends JFrame implements OpenFileObserver, ActionListen
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setCurrentDir(null);
         iconview = new IconView();
-        iconview.setDir(getCurrentDir());
+        iconview.setDir(currentDir.getPath());
         add(iconview);
         OpenFileVisitor.INSTANCE.addObserver(this);
 
@@ -42,32 +40,13 @@ public class MainWindow extends JFrame implements OpenFileObserver, ActionListen
     private void setTitleFromCurrentDir() {
         setTitle(String.format("%s - [%s]",
                 "File Explorer",
-                getCurrentDir().toAbsolutePath().toString()));
+                currentDir.getPath().toAbsolutePath().toString()));
     }
 
-    public Path getCurrentDir() {
-        return currentDir;
-    }
-
-    public void setCurrentDir(Path currentDir) {
+    public void setCurrentDir(Directory currentDir) {
         this.currentDir = Optional.ofNullable(currentDir).
-                orElse(Paths.get(System.getProperty("user.dir")));
+                orElse(new Directory(Paths.get(System.getProperty("user.dir"))));
         setTitleFromCurrentDir();
-    }
-
-    @Override
-    public void changeDirectory(Path pwd) {
-        setCurrentDir(pwd);
-        iconview.setDir(getCurrentDir());
-    }
-
-    @Override
-    public void fileOpened(Path path) {
-        try {
-            DefaultApplication.open(path);
-        } catch (IOException e) {
-            logger.severe(e.getMessage());
-        }
     }
 
     protected JButton makeNavigationButton(String imageName,
@@ -96,8 +75,23 @@ public class MainWindow extends JFrame implements OpenFileObserver, ActionListen
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case UP:
-                changeDirectory(getCurrentDir().getParent());
+                changeDirectory(currentDir.goUp());
                 break;
+        }
+    }
+
+    @Override
+    public void changeDirectory(Directory dir) {
+        setCurrentDir(dir);
+        iconview.setDir(dir.getPath());
+    }
+
+    @Override
+    public void fileOpened(File file) {
+        try {
+            DefaultApplication.open(file.getPath());
+        } catch (IOException e) {
+            logger.severe(e.getMessage());
         }
     }
 

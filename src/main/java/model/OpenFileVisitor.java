@@ -13,12 +13,12 @@ public enum OpenFileVisitor implements FileVisitor {
 
     @Override
     public void visit(File file) {
-        observers.stream().forEach(observer -> observer.fileOpened(file.getPath()));
+        observers.stream().forEach(observer -> observer.fileOpened(file));
     }
 
     @Override
     public void visit(Directory dir) {
-        observers.stream().forEach(observer -> observer.changeDirectory(dir.getPath()));
+        observers.stream().forEach(observer -> observer.changeDirectory(dir));
     }
 
     public void visit(Image image) {

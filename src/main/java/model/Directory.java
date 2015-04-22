@@ -43,4 +43,11 @@ public class Directory extends FileSystemEntity {
         f.visit(this);
     }
 
+    public Directory goUp() {
+        Path parent = getPath().getParent();
+        if (parent == null) {
+            return this;
+        }
+        return new Directory(parent);
+    }
 }

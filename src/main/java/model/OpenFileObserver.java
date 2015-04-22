@@ -7,7 +7,7 @@ import java.nio.file.Path;
  */
 public interface OpenFileObserver {
 
-    void changeDirectory(Path pwd);
+    void changeDirectory(Directory dir);
 
-    void fileOpened(Path path);
+    void fileOpened(File file);
 }

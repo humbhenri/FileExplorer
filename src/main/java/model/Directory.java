@@ -50,4 +50,8 @@ public class Directory extends FileSystemEntity {
         }
         return new Directory(parent);
     }
+
+    public String getAbsolutePath() {
+        return getPath().toAbsolutePath().toString();
+    }
 }

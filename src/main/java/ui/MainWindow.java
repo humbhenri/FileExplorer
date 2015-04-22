@@ -40,7 +40,7 @@ public class MainWindow extends JFrame implements OpenFileObserver, ActionListen
     private void setTitleFromCurrentDir() {
         setTitle(String.format("%s - [%s]",
                 "File Explorer",
-                currentDir.getPath().toAbsolutePath().toString()));
+                currentDir.getAbsolutePath()));
     }
 
     public void setCurrentDir(Directory currentDir) {

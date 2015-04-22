@@ -18,7 +18,7 @@ public enum OpenFileVisitor implements FileVisitor {
 
     @Override
     public void visit(Directory dir) {
-        observers.stream().forEach(observer -> observer.directoryChanged(dir.getPath()));
+        observers.stream().forEach(observer -> observer.changeDirectory(dir.getPath()));
     }
 
     public void visit(Image image) {

@@ -1,10 +1,5 @@
 package model;
 
-import model.Directory;
-import model.File;
-import model.FileVisitor;
-import model.OpenFileObserver;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,23 +7,22 @@ import java.util.List;
  * Created by humberto on 17/04/2015.
  */
 public enum OpenFileVisitor implements FileVisitor {
-    INSTANCE {
-        @Override
-        public void visit(Image image) {
-
-        }
-    };
+    INSTANCE;
 
     private List<OpenFileObserver> observers = new ArrayList<>();
 
     @Override
     public void visit(File file) {
-
+        observers.stream().forEach(observer -> observer.fileOpened(file.getPath()));
     }
 
     @Override
     public void visit(Directory dir) {
-        observers.stream().forEach(observer -> observer.directoryChanged(dir.getPwd()));
+        observers.stream().forEach(observer -> observer.directoryChanged(dir.getPath()));
+    }
+
+    public void visit(Image image) {
+
     }
 
     public void addObserver(OpenFileObserver observer) {

@@ -51,7 +51,7 @@ public class Icon extends JLabel {
 
     private ImageIcon loadThumbnail(Image image) {
         try {
-            java.awt.Image thumb = ImageIO.read(new java.io.File(image.getPath()))
+            java.awt.Image thumb = ImageIO.read(image.getPath().toFile())
                     .getScaledInstance(100, 100, BufferedImage.SCALE_SMOOTH);
             return new ImageIcon(thumb);
         } catch (IOException e) {

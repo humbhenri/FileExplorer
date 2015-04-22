@@ -10,17 +10,15 @@ import java.util.stream.StreamSupport;
 /**
  * Created by humberto on 16/04/2015.
  */
-public class Directory implements FileSystemEntity {
-
-    private Path pwd;
+public class Directory extends FileSystemEntity {
 
     public Directory(Path path) {
-        this.pwd = path;
+        super(path);
     }
 
     public Stream<FileSystemEntity> list() {
         try {
-            return StreamSupport.stream(Files.newDirectoryStream(pwd).spliterator(), false)
+            return StreamSupport.stream(Files.newDirectoryStream(getPath()).spliterator(), false)
                     .sorted(sortByDirectoriesFirst())
                     .map(FileFactory::create);
         } catch (IOException e) {
@@ -45,12 +43,4 @@ public class Directory implements FileSystemEntity {
         f.visit(this);
     }
 
-    @Override
-    public String toString() {
-        return pwd.getFileName().toString();
-    }
-
-    public Path getPwd() {
-        return pwd;
-    }
 }

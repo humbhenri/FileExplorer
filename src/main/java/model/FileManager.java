@@ -26,8 +26,7 @@ public class FileManager {
 
     public void goUp() {
         if (!currentDirIsRoot()) {
-            back.push(getCurrentDir().getParent());
-            forward.clear();
+            go(getCurrentDir().getParent());
         }
     }
 
@@ -43,7 +42,11 @@ public class FileManager {
     }
 
     public void go(String subfolder) {
-        back.push(getCurrentDir().resolve(subfolder));
+        go(getCurrentDir().resolve(subfolder));
+    }
+
+    public void go(Path path) {
+        back.push(path);
         forward.clear();
     }
 
@@ -52,6 +55,6 @@ public class FileManager {
     }
 
     public boolean canGoForward() {
-        return forward.size() > 0;
+        return !forward.isEmpty();
     }
 }

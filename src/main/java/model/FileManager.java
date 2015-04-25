@@ -84,4 +84,8 @@ public class FileManager {
     private void directoryChanged() {
         observers.forEach(FileManagerObserver::directoryChanged);
     }
+
+    public boolean canGoUp() {
+        return !currentDirIsRoot();
+    }
 }

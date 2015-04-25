@@ -194,6 +194,12 @@ public class FileManagerTest {
         assertEquals(getTestFolderPath().resolve("A"), fileManager.getCurrentDir());
     }
 
+    @Test
+    public void canGoUp() {
+        for (int i = 0; i < 100; i++) fileManager.goUp();
+        assertFalse(fileManager.canGoUp());
+    }
+
     private boolean currentDirIsRoot() {
         return StreamSupport.stream(FileSystems.getDefault().getRootDirectories().spliterator()
                 , false).anyMatch(path -> path.equals(fileManager.getCurrentDir()));

@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * Created by humberto on 16/04/2015.
@@ -14,6 +15,7 @@ public class IconView extends JPanel implements FileManagerObserver {
 
     private final FileManager fm;
     private IconFileVisitor iconFileVisitor;
+    private static final Logger LOGGER = Logger.getLogger(IconView.class.getName());
 
     public IconView(FileManager fm) {
         iconFileVisitor = new IconFileVisitor();
@@ -24,13 +26,11 @@ public class IconView extends JPanel implements FileManagerObserver {
 
     private void showFiles() {
         SwingUtilities.invokeLater(() -> {
-            Arrays.stream(getComponents())
-                    .filter(component -> component instanceof Icon)
-                    .forEach(this::remove);
+            Arrays.stream(getComponents()).forEach(this::remove);
             try {
                 fm.list().forEach(this::addIcon);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.severe(e.getMessage());
             }
             updateUI();
         });

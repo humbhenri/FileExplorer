@@ -1,5 +1,6 @@
 package ui;
 
+import model.DefaultApplication;
 import model.FileManager;
 import model.FileSystemEntity;
 
@@ -34,7 +35,11 @@ public class ThumbnailIcon extends AbstractIcon {
 
     @Override
     protected void doubleClick() {
-
+        try {
+            DefaultApplication.open(fileSystemEntity.getPath());
+        } catch (IOException e) {
+            LOGGER.severe(e.getMessage());
+        }
     }
 
 }

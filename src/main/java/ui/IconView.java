@@ -28,7 +28,7 @@ public class IconView extends JPanel implements FileManagerObserver {
             try {
                 fm.list().forEach(this::showIcon);
             } catch (IOException e) {
-                LOGGER.severe(e.getMessage());
+                LOGGER.severe(e.toString());
             }
             updateUI();
         });

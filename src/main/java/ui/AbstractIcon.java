@@ -11,23 +11,28 @@ import java.awt.event.MouseEvent;
 /**
  * Created by humberto on 24/04/2015.
  */
-public abstract class AbstractIcon extends JLabel {
+public abstract class AbstractIcon extends JPanel {
 
     protected final FileSystemEntity fileSystemEntity;
     protected final FileManager fileManager;
+    private JLabel icon;
 
     public AbstractIcon(FileSystemEntity fileSystemEntity, FileManager fileManager) {
-        super(fileSystemEntity.toString());
         this.fileSystemEntity = fileSystemEntity;
         this.fileManager = fileManager;
-        alignText();
         addClickBehaviour();
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setIcon();
+        setFileName(fileSystemEntity);
     }
 
-    protected void alignText() {
-        setHorizontalTextPosition(JLabel.CENTER);
-        setVerticalTextPosition(JLabel.BOTTOM);
+    private void setFileName(FileSystemEntity fileSystemEntity) {
+        JTextArea fileName = new JTextArea(fileSystemEntity.toString());
+        fileName.setLineWrap(true);
+        fileName.setEditable(false);
+        fileName.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fileName.setOpaque(false);
+        add(fileName);
     }
 
     protected void addClickBehaviour() {
@@ -53,6 +58,12 @@ public abstract class AbstractIcon extends JLabel {
             }
             setBackground(UIManager.getColor("TextField.selectionBackground"));
         });
+    }
+
+    protected void setIcon(ImageIcon imageIcon) {
+        this.icon = new JLabel(imageIcon);
+        icon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(this.icon);
     }
 
     protected abstract void setIcon();

@@ -4,6 +4,7 @@ import model.FileManager;
 import model.FileManagerObserver;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -18,14 +19,18 @@ public class Toolbar extends JToolBar implements ActionListener, FileManagerObse
     private static final String UP = "up";
     private static final String BACK = "back";
     private static final String FORWARD = "forward";
+    private static final String DETAILS = "details";
+    private static final String ICONS = "icons";
     private final JButton up;
     private final JButton forward;
     private final JButton back;
     private FileManager fm;
+    private DisplayViewObserver displayViewObserver;
 
-    public Toolbar(FileManager fm) {
+    public Toolbar(FileManager fm, DisplayViewObserver displayViewObserver) {
         this.fm = fm;
         fm.addObserver(this);
+        this.displayViewObserver = displayViewObserver;
         up = makeNavigationButton("go-up.png", UP, "up dir", "up");
         add(up);
         back = makeNavigationButton("go-back.png", BACK, "go back", "back");
@@ -33,6 +38,10 @@ public class Toolbar extends JToolBar implements ActionListener, FileManagerObse
         forward = makeNavigationButton("go-next.png", FORWARD, "go forward", "forward");
         add(forward);
         enableNavButtons();
+        add(Box.createHorizontalGlue());
+        add(makeNavigationButton("details.png", DETAILS, "details view", "details")
+                , BorderLayout.LINE_END);
+        add(makeNavigationButton("icon.png", ICONS, "icon view", "icon view"));
         setFloatable(false);
     }
 
@@ -69,6 +78,12 @@ public class Toolbar extends JToolBar implements ActionListener, FileManagerObse
                 break;
             case FORWARD:
                 fm.goForward();
+                break;
+            case ICONS:
+                displayViewObserver.showIconView();
+                break;
+            case DETAILS:
+                displayViewObserver.showDetailsView();
                 break;
         }
     }

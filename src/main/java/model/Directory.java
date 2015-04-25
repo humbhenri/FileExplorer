@@ -16,4 +16,8 @@ public class Directory extends FileSystemEntity {
         f.visit(this);
     }
 
+    @Override
+    public String getType() {
+        return "";
+    }
 }

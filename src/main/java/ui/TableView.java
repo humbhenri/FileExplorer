@@ -38,9 +38,7 @@ public class TableView extends JPanel implements FileManagerObserver {
     }
 
     private void populateTable() {
-        for (int row = 0; row < model.getRowCount(); row++) {
-            model.removeRow(row);
-        }
+        model.setNumRows(0);
         try {
             fm.list().forEach(path -> {
                 FileSystemEntity fileSystemEntity = FileFactory.create(path);

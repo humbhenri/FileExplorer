@@ -11,12 +11,14 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 /**
  * Created by humberto on 25/04/2015.
  */
 public class TableView extends JPanel implements FileManagerObserver {
 
+    private static Logger LOGGER = Logger.getLogger(TableView.class.getName());
     private FileManager fm;
     private DefaultTableModel model;
 
@@ -32,7 +34,7 @@ public class TableView extends JPanel implements FileManagerObserver {
         model.addColumn("Size");
         JTable table = new JTable(model);
         table.setShowGrid(false);
-        table.removeColumn(table.getColumnModel().getColumn(0));
+        table.getColumnModel().removeColumn(table.getColumn("Object"));
         populateTable();
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane);
@@ -47,10 +49,8 @@ public class TableView extends JPanel implements FileManagerObserver {
                 int row = table.rowAtPoint(p);
                 if (me.getClickCount() == 2) {
                     FileSystemEntity fileSystemEntity = (FileSystemEntity) model.getValueAt(row, 0);
-                    if (fileSystemEntity instanceof Directory)
-                        DoubleClick.openFolder(fm, fileSystemEntity);
-                    else
-                        DoubleClick.openFile(fileSystemEntity);
+                    DoubleClickVisitor doubleClickVisitor = new DoubleClickVisitor(fm);
+                    fileSystemEntity.accept(doubleClickVisitor);
                 }
             }
         });
@@ -70,7 +70,7 @@ public class TableView extends JPanel implements FileManagerObserver {
                 });
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.toString());
         }
     }
 

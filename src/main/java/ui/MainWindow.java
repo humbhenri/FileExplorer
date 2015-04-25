@@ -15,7 +15,6 @@ import java.util.logging.Logger;
  */
 public class MainWindow extends JFrame implements ActionListener, FileManagerObserver {
 
-    private IconView iconview;
     private Logger logger = Logger.getLogger(MainWindow.class.getName());
     private static final String UP = "up";
     private final FileManager fm = new FileManager();
@@ -27,8 +26,7 @@ public class MainWindow extends JFrame implements ActionListener, FileManagerObs
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitleFromCurrentDir();
 
-        iconview = new IconView(fm);
-        add(iconview);
+        add(new IconView(fm));
 
         JToolBar toolBar = new JToolBar();
         add(toolBar, BorderLayout.PAGE_START);

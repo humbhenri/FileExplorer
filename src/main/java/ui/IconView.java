@@ -14,21 +14,19 @@ import java.util.logging.Logger;
 public class IconView extends JPanel implements FileManagerObserver {
 
     private final FileManager fm;
-    private IconFileVisitor iconFileVisitor;
     private static final Logger LOGGER = Logger.getLogger(IconView.class.getName());
 
     public IconView(FileManager fm) {
-        iconFileVisitor = new IconFileVisitor();
         this.fm = fm;
         fm.addObserver(this);
-        showFiles();
+        showIcons();
     }
 
-    private void showFiles() {
+    private void showIcons() {
         SwingUtilities.invokeLater(() -> {
             Arrays.stream(getComponents()).forEach(this::remove);
             try {
-                fm.list().forEach(this::addIcon);
+                fm.list().forEach(this::showIcon);
             } catch (IOException e) {
                 LOGGER.severe(e.getMessage());
             }
@@ -36,14 +34,15 @@ public class IconView extends JPanel implements FileManagerObserver {
         });
     }
 
-    private void addIcon(Path path) {
+    private void showIcon(Path path) {
         FileSystemEntity fileSystemEntity = FileFactory.create(path);
+        IconFileVisitor iconFileVisitor = new IconFileVisitor(fileSystemEntity, fm);
         fileSystemEntity.accept(iconFileVisitor);
         add(iconFileVisitor.getIcon());
     }
 
     @Override
     public void directoryChanged() {
-        showFiles();
+        showIcons();
     }
 }

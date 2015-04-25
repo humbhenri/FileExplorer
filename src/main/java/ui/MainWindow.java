@@ -26,11 +26,16 @@ public class MainWindow extends JFrame implements ActionListener, FileManagerObs
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitleFromCurrentDir();
 
-        add(new IconView(fm));
+        IconView iconView = new IconView(fm);
+        JScrollPane scrollPane = new JScrollPane(iconView,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        add(scrollPane);
 
         JToolBar toolBar = new JToolBar();
         add(toolBar, BorderLayout.PAGE_START);
         toolBar.add(makeNavigationButton("go-up.png", UP, "up dir", "up"));
+
     }
 
     private void setTitleFromCurrentDir() {

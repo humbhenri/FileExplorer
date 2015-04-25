@@ -19,6 +19,7 @@ public class IconView extends JPanel implements FileManagerObserver {
     public IconView(FileManager fm) {
         this.fm = fm;
         fm.addObserver(this);
+        setLayout(new ModifiedFlowLayout());
         showIcons();
     }
 

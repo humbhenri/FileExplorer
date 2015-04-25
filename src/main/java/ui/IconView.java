@@ -1,27 +1,49 @@
 package ui;
 
-import model.Directory;
+import model.*;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 
 /**
  * Created by humberto on 16/04/2015.
  */
-public class IconView extends JPanel {
+public class IconView extends JPanel implements FileManagerObserver {
 
-    public void setDir(final Path dir) {
-        IconFileVisitor iconFileVisitor = new IconFileVisitor();
+    private final FileManager fm;
+    private IconFileVisitor iconFileVisitor;
+
+    public IconView(FileManager fm) {
+        iconFileVisitor = new IconFileVisitor();
+        this.fm = fm;
+        fm.addObserver(this);
+        showFiles();
+    }
+
+    private void showFiles() {
         SwingUtilities.invokeLater(() -> {
             Arrays.stream(getComponents())
                     .filter(component -> component instanceof Icon)
                     .forEach(this::remove);
-            new Directory(dir).list().forEach(file -> {
-                file.accept(iconFileVisitor);
-                add(iconFileVisitor.getIcon());
-            });
+            try {
+                fm.list().forEach(this::addIcon);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             updateUI();
         });
+    }
+
+    private void addIcon(Path path) {
+        FileSystemEntity fileSystemEntity = FileFactory.create(path);
+        fileSystemEntity.accept(iconFileVisitor);
+        add(iconFileVisitor.getIcon());
+    }
+
+    @Override
+    public void directoryChanged() {
+        showFiles();
     }
 }

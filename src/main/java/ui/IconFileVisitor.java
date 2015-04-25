@@ -12,6 +12,7 @@ public class IconFileVisitor implements FileVisitor {
 
     private JComponent component;
 
+    @Override
     public void visit(File file) {
         component = new Icon(file);
     }

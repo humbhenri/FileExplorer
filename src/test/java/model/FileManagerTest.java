@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by humberto on 22/04/2015.
@@ -145,6 +145,53 @@ public class FileManagerTest {
         fileManager.goBack();
         fileManager.go("foo");
         assertFalse(fileManager.canGoForward());
+    }
+
+    @Test
+    public void listFiles() throws IOException {
+        testFolder.newFile("A");
+        testFolder.newFile("B");
+        testFolder.newFile("C");
+        assertEquals(Arrays.asList("A", "B", "C"), fileManager
+                .list()
+                .map(path -> path.getFileName().toString())
+                .collect(Collectors.toList()));
+    }
+
+    @Test
+    public void displayFullPath() throws IOException {
+        testFolder.newFolder("ABACATE");
+        fileManager.go("ABACATE");
+        assertEquals(getTestFolderPath().resolve("ABACATE").toAbsolutePath().toString(),
+                fileManager.getFullPath());
+    }
+
+    @Test
+    public void notifyWhenDirectoryChanged() {
+        boolean[] notified = {false};
+        fileManager.addObserver(() -> notified[0] = true);
+        fileManager.goUp();
+        assertTrue(notified[0]);
+    }
+
+    @Test
+    public void notifyWhenDirectoryChangedGoBack() {
+        boolean[] notified = {false};
+        fileManager.addObserver(() -> notified[0] = true);
+        fileManager.goUp();
+
+        notified[0] = false;
+        fileManager.goBack();
+        assertTrue(notified[0]);
+    }
+
+    @Test
+    public void goForward() throws IOException {
+        testFolder.newFolder("A");
+        fileManager.go("A");
+        fileManager.goBack();
+        fileManager.goForward();
+        assertEquals(getTestFolderPath().resolve("A"), fileManager.getCurrentDir());
     }
 
     private boolean currentDirIsRoot() {

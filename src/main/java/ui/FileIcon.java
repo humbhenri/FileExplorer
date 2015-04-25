@@ -1,11 +1,10 @@
 package ui;
 
-import model.DefaultApplication;
+import model.DoubleClick;
 import model.FileManager;
 import model.FileSystemEntity;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
@@ -27,11 +26,7 @@ public class FileIcon extends AbstractIcon {
 
     @Override
     protected void doubleClick() {
-        try {
-            DefaultApplication.open(fileSystemEntity.getPath());
-        } catch (IOException e) {
-            LOGGER.severe(e.getMessage());
-        }
+        DoubleClick.openFile(fileSystemEntity);
     }
 
 }

@@ -1,5 +1,6 @@
 package ui;
 
+import model.DoubleClick;
 import model.FileManager;
 import model.FileSystemEntity;
 
@@ -23,7 +24,7 @@ public class DirectoryIcon extends AbstractIcon {
 
     @Override
     protected void doubleClick() {
-        fileManager.go(fileSystemEntity.getPath());
+        DoubleClick.openFolder(fileManager, fileSystemEntity);
     }
 
 }

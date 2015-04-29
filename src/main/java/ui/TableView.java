@@ -26,7 +26,12 @@ public class TableView extends JPanel implements FileManagerObserver {
         super(new BorderLayout());
         this.fm = fm;
         fm.addObserver(this);
-        model = new DefaultTableModel();
+        model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         model.addColumn("Object");
         model.addColumn("Name");
         model.addColumn("Date");
@@ -57,7 +62,7 @@ public class TableView extends JPanel implements FileManagerObserver {
     }
 
     private void populateTable() {
-        model.setNumRows(0);
+        model.setRowCount(0);
         try {
             fm.list().forEach(path -> {
                 FileSystemEntity fileSystemEntity = FileFactory.create(path);

@@ -5,6 +5,7 @@ import model.FileManagerObserver;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 /**
  * Created by humberto on 16/04/2015.
@@ -21,9 +22,8 @@ public class MainWindow extends JFrame implements FileManagerObserver, DisplayVi
         setSize(800, 600);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitleFromCurrentDir();
-        addDirectoryView();
-        Toolbar toolBar = new Toolbar(fm, this);
-        add(toolBar, BorderLayout.PAGE_START);
+        addTreeView();
+        addToolbar();
     }
 
     public static void main(String... args) {
@@ -35,6 +35,21 @@ public class MainWindow extends JFrame implements FileManagerObserver, DisplayVi
         }
 
         new MainWindow().setVisible(true);
+    }
+
+    private void addTreeView() {
+        addDirectoryView();
+        TreeView fileTree = new TreeView(File.listRoots()[0]);
+        JScrollPane leftComponent = new JScrollPane(fileTree);
+        leftComponent.setMinimumSize(new Dimension(100, 50));
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, leftComponent,
+                directoryView);
+        add(splitPane);
+    }
+
+    private void addToolbar() {
+        Toolbar toolBar = new Toolbar(fm, this);
+        add(toolBar, BorderLayout.PAGE_START);
     }
 
     private void addDirectoryView() {

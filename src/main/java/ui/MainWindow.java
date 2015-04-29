@@ -39,7 +39,7 @@ public class MainWindow extends JFrame implements FileManagerObserver, DisplayVi
 
     private void addTreeView() {
         addDirectoryView();
-        TreeView fileTree = new TreeView(File.listRoots()[0]);
+        TreeView fileTree = new TreeView(fm, File.listRoots()[0]);
         JScrollPane leftComponent = new JScrollPane(fileTree);
         leftComponent.setMinimumSize(new Dimension(100, 50));
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, leftComponent,

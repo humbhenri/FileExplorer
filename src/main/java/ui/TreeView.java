@@ -1,5 +1,8 @@
 package ui;
 
+import model.FileManager;
+import model.FileManagerObserver;
+
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -7,6 +10,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Vector;
@@ -106,16 +110,35 @@ class TreeFile extends File {
     }
 }
 
-public class TreeView extends JTree implements TreeSelectionListener {
+public class TreeView extends JTree implements TreeSelectionListener, FileManagerObserver {
 
-    public TreeView(File root) {
+    private FileManager fm;
+
+    public TreeView(FileManager fm, File root) {
         super(new FileSystemModel(root));
+        this.fm = fm;
+        fm.addObserver(this);
         setEditable(false);
         addTreeSelectionListener(this);
+        getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        // change dir
+        TreeFile node = (TreeFile)
+                getLastSelectedPathComponent();
+
+        if (node == null)
+            //Nothing is selected.
+            return;
+
+        if (node.isDirectory()) {
+            fm.go(node.toPath());
+        }
+    }
+
+    @Override
+    public void directoryChanged() {
+
     }
 }

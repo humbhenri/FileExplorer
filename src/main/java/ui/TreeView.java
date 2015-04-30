@@ -6,13 +6,14 @@ import model.FileManagerObserver;
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -96,8 +97,6 @@ class FileSystemModel implements TreeModel {
     public void removeTreeModelListener(TreeModelListener listener) {
         listeners.remove(listener);
     }
-
-
 }
 
 class TreeFile extends File {
@@ -110,7 +109,7 @@ class TreeFile extends File {
     }
 }
 
-public class TreeView extends JTree implements TreeSelectionListener, FileManagerObserver {
+public class TreeView extends JTree implements FileManagerObserver {
 
     private FileManager fm;
 
@@ -119,26 +118,33 @@ public class TreeView extends JTree implements TreeSelectionListener, FileManage
         this.fm = fm;
         fm.addObserver(this);
         setEditable(false);
-        addTreeSelectionListener(this);
+        addTreeSelectionListener(e -> {
+            File node = (File) getSelectionModel().getSelectionPath().getLastPathComponent();
+
+            if (node == null)
+                //Nothing is selected.
+                return;
+
+            if (node.isDirectory() && currentDirDifferent(node)) {
+                fm.go(node.getAbsoluteFile().toPath());
+            }
+        });
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        setExpandsSelectedPaths(true);
     }
 
-    @Override
-    public void valueChanged(TreeSelectionEvent e) {
-        TreeFile node = (TreeFile)
-                getLastSelectedPathComponent();
-
-        if (node == null)
-            //Nothing is selected.
-            return;
-
-        if (node.isDirectory()) {
-            fm.go(node.toPath());
-        }
+    private boolean currentDirDifferent(File dir) {
+        return !fm.getCurrentDir().toFile().equals(dir);
     }
 
     @Override
     public void directoryChanged() {
-
+        List<File> nodePaths = new ArrayList<>();
+        for (Path dir = fm.getCurrentDir(); dir != null; dir = dir.getParent()) {
+            nodePaths.add(0, dir.toFile());
+        }
+        TreePath selectionPath = new TreePath(nodePaths.toArray());
+        setSelectionPath(selectionPath);
+        scrollPathToVisible(selectionPath);
     }
 }
